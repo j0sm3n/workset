@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <title>
+        {% block title %}
+        {% endblock title %}
+    </title>
+
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static 'weekly/css/styles.css' %}">
+</head>
+
+<body>
+
+    <!-- Cabecera de la página -->
+    <header>
+        <div id="logotipo">
+            <!-- Logotipo FGV -->
+            <img src="{% static 'weekly/img/logo.png' %}">
+            <h1>Gestión de turnos de trabajo</h1>
+        </div>
+    </header>
+
+    <nav>
+        <ul>
+            <li>
+                <a href="/index">Inicio</a>
+            </li>
+            <li>
+                <a href="/weekly">Gráfico semanal</a>
+            </li>
+            <li>
+                <a href="/agents">Listado agentes</a>
+            </li>
+            <li>
+                <a href="/weekly-agent">Turnos del agente</a>
+            </li>
+        </ul>
+    </nav>
+
+    <div class="barra">
+        <span class="esquina-izquierda"></span>
+        <span class="relleno-barra"></span>
+        <span class="esquina-derecha"></span>
+    </div>
+
+    <div id="content">
+        <div class="box">
+            {% block content %}
+            {% endblock content %}
+        </div>
+    </div>
+
+    <footer>
+        Gestion de turnos &copy; Jose Antonio Mendoza
+    </footer>
+</body>
+
+</html>

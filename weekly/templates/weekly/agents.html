@@ -1,0 +1,13 @@
+{% extends 'weekly/layout.html' %}
+
+{% block title %}Listado de agentes{% endblock title %}
+
+{% block content %}
+    <h1 class="title">Listado de agentes</h1>
+
+    <ul>
+        {% for agent in agents %}
+            <li>{{agent.cf}} {{agent.name}} {{agent.surnames}}
+        {% endfor %}
+    </ul>
+{% endblock content %}
