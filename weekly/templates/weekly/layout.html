@@ -26,16 +26,22 @@
     <nav>
         <ul>
             <li>
-                <a href="/index">Inicio</a>
+                <a href="{% url 'index' %}">Inicio</a>
             </li>
             <li>
-                <a href="/weekly">Gráfico semanal</a>
+                <a href="{% url 'weekly' %}">Gráfico semanal</a>
             </li>
             <li>
-                <a href="/agents">Listado agentes</a>
+                <a href="{% url 'agents' %}">Listado agentes</a>
             </li>
             <li>
-                <a href="/weekly-agent">Turnos del agente</a>
+                <a href="{% url 'weekly_agent' %}">Turnos del agente</a>
+            </li>
+            <li>
+                <a href="{% url 'new_agent' %}">Nuevo agente</a>
+            </li>
+            <li>
+                <a href="{% url 'new_form_agent' %}">Nuevo agente 2</a>
             </li>
         </ul>
     </nav>
@@ -54,7 +60,7 @@
     </div>
 
     <footer>
-        Gestion de turnos &copy; Jose Antonio Mendoza
+        Gestion de turnos &copy; Jose Antonio Mendoza - {% now "d/m/Y" %}
     </footer>
 </body>
 

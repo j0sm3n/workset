@@ -1,11 +1,34 @@
 from django.db import models
 
+
+class Residence(models.Model):
+    name = models.CharField(max_length=20, verbose_name='Residencia')
+
+    class Meta:
+        verbose_name = 'residencia'
+        verbose_name_plural = 'residencias'
+
+    def __str__(self):
+        return self.name
+
+
+class Category(models.Model):
+    name = models.CharField(max_length=20, verbose_name='Categoría')
+
+    class Meta:
+        verbose_name = 'categoría'
+        verbose_name_plural = 'categorías'
+
+    def __str__(self):
+        return self.name
+
+
 class Agent(models.Model):
     cf = models.IntegerField(unique=True, primary_key=True, verbose_name='C.F.')
     name = models.CharField(max_length=50, verbose_name='Nombre')
     surnames = models.CharField(max_length=100, verbose_name='Apellidos')
-    category = models.CharField(max_length=20, verbose_name='Categoría')
-    residence =models.CharField(max_length=20, verbose_name='Residencia')
+    category = models.ForeignKey(Category, on_delete=models.DO_NOTHING, verbose_name='Categoría')
+    residence = models.ForeignKey(Residence, on_delete=models.DO_NOTHING, verbose_name="Residencia")
 
     class Meta:
         verbose_name = 'agente'
@@ -34,10 +57,11 @@ class AgentShift(models.Model):
     shift = models.ForeignKey(Shift, on_delete=models.DO_NOTHING, verbose_name='Turno')
     agent = models.ForeignKey(Agent, on_delete=models.DO_NOTHING, verbose_name='Agente')
     shift_date = models.DateField(verbose_name='Fecha')
+    modified = models.BooleanField(verbose_name='Modificado')
 
     class Meta:
-        verbose_name = 'turno_agente'
-        verbose_name_plural = 'turnos_agente'
+        verbose_name = 'turno agente'
+        verbose_name_plural = 'turnos agente'
         ordering = ['agent', 'shift_date']
 
     def __str__(self):

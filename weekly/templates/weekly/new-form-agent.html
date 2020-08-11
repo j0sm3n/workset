@@ -1,0 +1,21 @@
+{% extends 'weekly/layout.html' %}
+
+{% block title %} {{title}} {% endblock title %}
+
+{% block content %}
+    <h1 class="title"> {{title}} </h1>
+
+    {% if form.errors %}
+        <strong class="error">Hay errores en el formulario</strong>
+    {% endif %}
+
+    <form action="" method="POST">
+
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <input type="submit" value="Guardar" />
+
+    </form>
+{% endblock content %}

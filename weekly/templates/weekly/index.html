@@ -1,9 +1,16 @@
 {% extends 'weekly/layout.html' %}
 
-{% block title %}
-    Gestión de turnos
-{% endblock title %}
+{% block title %} {{title}} {% endblock title %}
 
 {% block content %}
-    <h1 class="title">Gestión de turnos</h1>
+{% comment 'Título del comentario' %}
+    Esto es el comentario
+{% endcomment %}
+
+    <h1 class="title">{{title}}</h1>
+
+    <h2>Último gráfico semanal</h2>
+    <p>
+        {% lorem 3 %}
+    </p>
 {% endblock content %}

@@ -1,13 +1,26 @@
 {% extends 'weekly/layout.html' %}
 
-{% block title %}Listado de agentes{% endblock title %}
+{% block title %} {{title}} {% endblock title %}
 
 {% block content %}
-    <h1 class="title">Listado de agentes</h1>
+    <h1 class="title">{{title}}</h1>
 
-    <ul>
-        {% for agent in agents %}
-            <li>{{agent.cf}} {{agent.name}} {{agent.surnames}}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message">
+                {{ message }}
+            </div>
         {% endfor %}
-    </ul>
+    {% endif %}
+
+    <ol>
+        {% for agent in agents %}
+            <li>
+                {{agent.cf}} {{agent.name|title}} {{agent.surnames|title}}
+                <a href="{% url 'agent' cf=agent.cf %}">Ver</a>
+            </li>
+        {% empty %}
+            <p><strong>No hay agentes en la base de datos</strong></p>
+        {% endfor %}
+    </ol>
 {% endblock content %}
