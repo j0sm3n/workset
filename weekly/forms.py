@@ -4,7 +4,7 @@ from django.core import validators
 from .models import Category, Residence
 
 
-class FormAgent(forms.Form):
+class AgentForm(forms.Form):
     cf = forms.CharField(label='C.F.', min_length=3, max_length=4, required=True, validators=[
         validators.RegexValidator('[0-9]{3,4}', 'El C.F. sólo puede contener números')
     ])
@@ -29,3 +29,8 @@ class FormAgent(forms.Form):
         'placeholder': 'Apellidos del agente',
         'class': 'surnames_content_form'
     })
+
+
+class UploadDocumentForm(forms.Form):
+    name = forms.CharField(max_length=100)
+    excel_file = forms.FileField()

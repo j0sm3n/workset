@@ -1,7 +1,7 @@
 from django.shortcuts import HttpResponse, render, redirect
 from django.contrib import messages
-from weekly.models import Agent, Residence, Category
-from weekly.forms import FormAgent
+from weekly.models import Agent, Residence, Category, Document
+from weekly.forms import AgentForm, UploadDocumentForm
 
 
 def index(request):
@@ -84,7 +84,7 @@ def new_agent(request):
 def new_form_agent(request):
     if request.method == 'POST':
 
-        form = FormAgent(request.POST)
+        form = AgentForm(request.POST)
 
         if form.is_valid():
             data_form = form.cleaned_data
@@ -110,7 +110,7 @@ def new_form_agent(request):
 
             return redirect('agents')
     else:
-        form = FormAgent()
+        form = AgentForm()
 
     return render(request, 'weekly/new-form-agent.html', {
         'title': 'Nuevo agente desde form',
@@ -152,3 +152,34 @@ def save_agent(request):
         """
 
     return HttpResponse(response)
+
+
+def upload_doc(request):
+    saved = False
+
+    if request.method == 'POST':
+        form = UploadDocumentForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            # TODO Cambiar nombre del fichero
+
+            excel_doc = Document()
+            excel_doc.name = form.cleaned_data['name']
+            excel_doc.document = form.cleaned_data['excel_file']
+            excel_doc.save()
+            saved = True
+
+            # Crea mensaje flash
+            messages.success(request, f'El archivo {excel_doc.name} se ha guardado correctamente')
+
+            return redirect('index')
+
+    else:
+        form = UploadDocumentForm()
+
+    return render(request, 'weekly/upload-doc.html', {
+        'title': 'Guardar archivo excel',
+        'form': form,
+        'saved': saved
+    })
+

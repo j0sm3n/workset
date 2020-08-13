@@ -3,9 +3,14 @@
 {% block title %} {{title}} {% endblock title %}
 
 {% block content %}
-{% comment 'Título del comentario' %}
-    Esto es el comentario
-{% endcomment %}
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
 
     <h1 class="title">{{title}}</h1>
 

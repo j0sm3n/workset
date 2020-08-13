@@ -9,7 +9,7 @@ class Residence(models.Model):
         verbose_name_plural = 'residencias'
 
     def __str__(self):
-        return self.name
+        return self.name.title()
 
 
 class Category(models.Model):
@@ -20,7 +20,7 @@ class Category(models.Model):
         verbose_name_plural = 'categorías'
 
     def __str__(self):
-        return self.name
+        return self.name.title()
 
 
 class Agent(models.Model):
@@ -33,10 +33,10 @@ class Agent(models.Model):
     class Meta:
         verbose_name = 'agente'
         verbose_name_plural = 'agentes'
-        ordering = ['surnames']
+        ordering = ['name']
 
     def __str__(self):
-        return self.name
+        return f"{self.cf} {self.name.title()} {self.surnames.title()}"
 
 
 class Shift(models.Model):
@@ -53,6 +53,7 @@ class Shift(models.Model):
     def __str__(self):
         return self.name
 
+
 class AgentShift(models.Model):
     shift = models.ForeignKey(Shift, on_delete=models.DO_NOTHING, verbose_name='Turno')
     agent = models.ForeignKey(Agent, on_delete=models.DO_NOTHING, verbose_name='Agente')
@@ -66,3 +67,9 @@ class AgentShift(models.Model):
 
     def __str__(self):
         return f"{self.shift_date} {self.agent} {self.shift}"
+
+
+class Document(models.Model):
+    name = models.CharField(max_length=100, blank=True)
+    document = models.FileField(upload_to='documents/')
+    uploaded_at = models.DateTimeField(auto_now_add=True)
