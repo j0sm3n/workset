@@ -1,5 +1,7 @@
 from django.db import models
 
+from weekly.datos_excel import str_doc_date
+
 
 class Residence(models.Model):
     name = models.CharField(max_length=20, verbose_name='Residencia')
@@ -70,6 +72,9 @@ class AgentShift(models.Model):
 
 
 class Document(models.Model):
-    name = models.CharField(max_length=100, blank=True)
-    document = models.FileField(upload_to='documents/')
-    uploaded_at = models.DateTimeField(auto_now_add=True)
+    document = models.FileField(upload_to='documents/', verbose_name='Archivo excel')
+    uploaded_at = models.DateTimeField(auto_now_add=True, verbose_name='Subido el')
+
+    class Meta:
+        verbose_name = 'documento'
+        verbose_name_plural = 'documentos'

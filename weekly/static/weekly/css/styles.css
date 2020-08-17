@@ -161,6 +161,7 @@ nav ul li a:hover{
 .box form input[type="submit"],
 .box form input[type="butthom"],
 .box form button{
+    margin-top: 20px;
     padding: 10px;
     padding-top: 10px;
     background: #f5b540;
@@ -177,7 +178,7 @@ nav ul li a:hover{
 }
 
 .error{
-    color: red;
+    color: #ff0000;
 }
 
 .message{

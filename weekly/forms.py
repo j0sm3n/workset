@@ -1,7 +1,8 @@
 from django import forms
+from django.forms import ModelForm
 from django.core import validators
 
-from .models import Category, Residence
+from .models import Category, Residence, Document
 
 
 class AgentForm(forms.Form):
@@ -31,6 +32,11 @@ class AgentForm(forms.Form):
     })
 
 
-class UploadDocumentForm(forms.Form):
-    name = forms.CharField(max_length=100)
-    excel_file = forms.FileField()
+# class UploadDocumentForm(forms.Form):
+#     name = forms.CharField(max_length=100)
+#     excel_file = forms.FileField()
+
+class DocumentForm(ModelForm):
+    class Meta:
+        model = Document
+        fields = ['document', ]

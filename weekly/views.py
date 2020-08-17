@@ -1,7 +1,10 @@
+import os, shutil
 from django.shortcuts import HttpResponse, render, redirect
 from django.contrib import messages
+from django.conf import settings
 from weekly.models import Agent, Residence, Category, Document
-from weekly.forms import AgentForm, UploadDocumentForm
+from weekly.forms import AgentForm, DocumentForm
+from weekly.datos_excel import rename_doc
 
 
 def index(request):
@@ -47,26 +50,25 @@ def weekly_agent(request):
 
 def agent(request, cf):
     try:
-        agent = Agent.objects.get(pk=cf)
-        response = f"Agente: {cf} {agent.name.title()} {agent.surnames.title()}"
+        agnt = Agent.objects.get(pk=cf)
     except:
         return render(request, 'weekly/weekly-agent.html', {
             'title': "Agente no encontrado", })
     return render(request, 'weekly/weekly-agent.html', {
         'title': 'Turnos del agente',
-        'cf': agent.cf,
-        'name': agent.name,
-        'surnames': agent.surnames,
+        'cf': agnt.cf,
+        'name': agnt.name,
+        'surnames': agnt.surnames,
     })
 
 
 def agents(request):
     # agents = Agent.objects.all()
-    agents = Agent.objects.order_by('cf')
+    agnts = Agent.objects.order_by('cf')
 
     return render(request, 'weekly/agents.html', {
         'title': 'Listado de agentes',
-        'agents': agents,
+        'agents': agnts,
     })
 
 
@@ -95,7 +97,7 @@ def new_form_agent(request):
             category = data_form.get('category')
             residence = data_form.get('residence')
 
-            agent = Agent(
+            agnt = Agent(
                 cf=cf,
                 name=name,
                 surnames=surnames,
@@ -103,7 +105,7 @@ def new_form_agent(request):
                 residence_id=residence.id
             )
 
-            agent.save()
+            agnt.save()
 
             # Crea mensaje flash
             messages.success(request, f'El agente {cf} se ha creado correctamente')
@@ -127,7 +129,7 @@ def save_agent(request):
         category = request.POST['category']
         residence = request.POST['residence']
 
-        agent = Agent(
+        agnt = Agent(
             cf=cf,
             name=name,
             surnames=surnames,
@@ -135,11 +137,13 @@ def save_agent(request):
             residence_id=residence
         )
 
-        agent.save()
+        agnt.save()
 
         response = f"""
             <h2>Se ha creado el agente correctamente</h2>
-            <strong>{agent.cf} {agent.name.title()} {agent.surnames.title()}, {category.name.title()}, {residence.name.title()}</strong>
+            <strong>
+                {agnt.cf} {agnt.name.title()} {agnt.surnames.title()}, {category.name.title()}, {residence.name.title()}
+            </strong>
             <br>
             <a href="../new-agent/">Volver</a>
         """
@@ -154,32 +158,75 @@ def save_agent(request):
     return HttpResponse(response)
 
 
-def upload_doc(request):
-    saved = False
+# def upload_doc(request):
+#
+#     if request.method == 'POST':
+#         form = DocumentForm(request.POST, request.FILES)
+#
+#         if form.is_valid():
+#             # TODO Cambiar nombre del fichero
+#             # ERROR: Busca en la carpeta documents para renombrar, pero como todavía
+#             #        no se ha guardado el archivo salta un FileNotFoundError
+#
+#             excel_doc = Document()
+#             # excel_doc.document = form.cleaned_data['document']
+#             path = os.path.join(settings.MEDIA_ROOT, 'documents')
+#             saved_doc = os.path.join(path, form.cleaned_data['document'].name)
+#             new_file_name = str_doc_date(saved_doc)
+#             new_file_name += "_SEM.xlsx"
+#             excel_doc.document = new_file_name
+#             excel_doc.save()
+#
+#             # rename_doc(saved_doc)
+#
+#             # Crea mensaje flash
+#             messages.success(request, f'El archivo {new_file_name} se ha guardado correctamente')
+#             # messages.success(request, type(excel_doc.document))
+#
+#             return redirect('index')
+#
+#     else:
+#         form = DocumentForm()
+#
+#     return render(request, 'weekly/upload-doc.html', {
+#         'title': 'Guardar archivo excel',
+#         'form': form
+#     })
 
+
+def upload_doc(request):
     if request.method == 'POST':
-        form = UploadDocumentForm(request.POST, request.FILES)
+        form = DocumentForm(request.POST, request.FILES)
 
         if form.is_valid():
-            # TODO Cambiar nombre del fichero
+            new_file_name = handle_uploaded_file(request.FILES['document'])
 
             excel_doc = Document()
-            excel_doc.name = form.cleaned_data['name']
-            excel_doc.document = form.cleaned_data['excel_file']
+            excel_doc.document = new_file_name
             excel_doc.save()
-            saved = True
 
-            # Crea mensaje flash
-            messages.success(request, f'El archivo {excel_doc.name} se ha guardado correctamente')
+            messages.success(request, f'El archivo {new_file_name} se ha guardado correctamente')
 
             return redirect('index')
 
     else:
-        form = UploadDocumentForm()
+        form = DocumentForm()
 
     return render(request, 'weekly/upload-doc.html', {
         'title': 'Guardar archivo excel',
-        'form': form,
-        'saved': saved
+        'form': form
     })
 
+
+def handle_uploaded_file(f):
+    path_file = os.path.join(settings.MEDIA_ROOT, 'documents')
+    path_file = os.path.join(path_file, 'GSEM.xlsx')
+
+    with open(path_file, 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+
+    new_name = rename_doc(path_file)
+    shutil.move(new_name, f'media/documents/{new_name}')
+
+    return new_name
