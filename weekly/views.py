@@ -25,29 +25,6 @@ def weekly_agent(request):
     })
 
 
-# def new_agent(request, cf, name, surnames, category, residence):
-#     agent = Agent(
-#         cf = cf,
-#         name = name,
-#         surnames = surnames,
-#         category = category,
-#         residence = residence
-#     )
-#     agent.save()
-#
-#     html = f"Creado el agente <strong>{agent.cf} \
-#             {agent.name} {agent.surnames}</strong>"
-#
-#     return HttpResponse(html)
-
-# def agent(request, cf):
-#     try:
-#         agent = Agent.objects.get(pk=cf)
-#         response = f"Agente: {cf} {agent.name.title()} {agent.surnames.title()}"
-#     except:
-#         response = "<strong>Agente no encontrado</strong>"
-#     return HttpResponse(response)
-
 def agent(request, cf):
     try:
         agnt = Agent.objects.get(pk=cf)
@@ -73,17 +50,6 @@ def agents(request):
 
 
 def new_agent(request):
-    residences = Residence.objects.all()
-    categories = Category.objects.all()
-
-    return render(request, 'weekly/new-agent.html', {
-        'title': 'Nuevo agente',
-        'residences': residences,
-        'categories': categories,
-    })
-
-
-def new_form_agent(request):
     if request.method == 'POST':
 
         form = AgentForm(request.POST)
@@ -114,84 +80,10 @@ def new_form_agent(request):
     else:
         form = AgentForm()
 
-    return render(request, 'weekly/new-form-agent.html', {
+    return render(request, 'weekly/new-agent.html', {
         'title': 'Nuevo agente desde form',
         'form': form,
     })
-
-
-def save_agent(request):
-    if request.method == 'POST':
-
-        cf = request.POST['cf']
-        name = request.POST['name']
-        surnames = request.POST['surnames']
-        category = request.POST['category']
-        residence = request.POST['residence']
-
-        agnt = Agent(
-            cf=cf,
-            name=name,
-            surnames=surnames,
-            category_id=category,
-            residence_id=residence
-        )
-
-        agnt.save()
-
-        response = f"""
-            <h2>Se ha creado el agente correctamente</h2>
-            <strong>
-                {agnt.cf} {agnt.name.title()} {agnt.surnames.title()}, {category.name.title()}, {residence.name.title()}
-            </strong>
-            <br>
-            <a href="../new-agent/">Volver</a>
-        """
-
-    else:
-        response = """
-            <h2>No se ha podido crear el agente</h2>
-            <br>
-            <a href="../new-agent/">Volver</a>
-        """
-
-    return HttpResponse(response)
-
-
-# def upload_doc(request):
-#
-#     if request.method == 'POST':
-#         form = DocumentForm(request.POST, request.FILES)
-#
-#         if form.is_valid():
-#             # TODO Cambiar nombre del fichero
-#             # ERROR: Busca en la carpeta documents para renombrar, pero como todavía
-#             #        no se ha guardado el archivo salta un FileNotFoundError
-#
-#             excel_doc = Document()
-#             # excel_doc.document = form.cleaned_data['document']
-#             path = os.path.join(settings.MEDIA_ROOT, 'documents')
-#             saved_doc = os.path.join(path, form.cleaned_data['document'].name)
-#             new_file_name = str_doc_date(saved_doc)
-#             new_file_name += "_SEM.xlsx"
-#             excel_doc.document = new_file_name
-#             excel_doc.save()
-#
-#             # rename_doc(saved_doc)
-#
-#             # Crea mensaje flash
-#             messages.success(request, f'El archivo {new_file_name} se ha guardado correctamente')
-#             # messages.success(request, type(excel_doc.document))
-#
-#             return redirect('index')
-#
-#     else:
-#         form = DocumentForm()
-#
-#     return render(request, 'weekly/upload-doc.html', {
-#         'title': 'Guardar archivo excel',
-#         'form': form
-#     })
 
 
 def upload_doc(request):
@@ -207,7 +99,7 @@ def upload_doc(request):
 
             messages.success(request, f'El archivo {new_file_name} se ha guardado correctamente')
 
-            return redirect('index')
+            return redirect('upload_doc')
 
     else:
         form = DocumentForm()

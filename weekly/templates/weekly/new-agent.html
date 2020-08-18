@@ -5,32 +5,15 @@
 {% block content %}
     <h1 class="title"> {{title}} </h1>
 
-    <form action="{% url 'save_agent' %}" method="POST">
+    {% if form.errors %}
+        <strong class="error">Hay errores en el formulario</strong>
+    {% endif %}
+
+    <form action="" method="POST">
 
         {% csrf_token %}
 
-        <label for="cf">C.F.</label>
-        <input type="text" name="cf" />
-
-        <label for="name">Nombre</label>
-        <input type="text" name="name" />
-
-        <label for="surnames">Apellidos</label>
-        <input type="text" name="surnames" />
-
-        <label for="category">Categoría</label>
-        <select name="category">
-            {% for category in categories %}
-                <option value="{{category.name}}">{{category.name|title}}</option>
-            {% endfor %}
-        </select>
-
-        <label for="residence">Residencia</label>
-        <select name="residence">
-            {% for residence in residences %}
-                <option value="{{residence.name}}">{{residence.name|title}}</option>
-            {% endfor %}
-        </select>
+        {{ form.as_p }}
 
         <input type="submit" value="Guardar" />
 

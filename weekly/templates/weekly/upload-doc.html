@@ -5,6 +5,15 @@
 {% block title %} {{title}} {% endblock title %}
 
 {% block content %}
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="message">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
     <h1 class="title"> {{title}} </h1>
 
     {% if form.errors %}

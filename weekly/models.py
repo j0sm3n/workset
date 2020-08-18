@@ -1,7 +1,5 @@
 from django.db import models
 
-from weekly.datos_excel import str_doc_date
-
 
 class Residence(models.Model):
     name = models.CharField(max_length=20, verbose_name='Residencia')

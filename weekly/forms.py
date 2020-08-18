@@ -7,14 +7,11 @@ from .models import Category, Residence, Document
 
 class AgentForm(forms.Form):
     cf = forms.CharField(label='C.F.', min_length=3, max_length=4, required=True, validators=[
-        validators.RegexValidator('[0-9]{3,4}', 'El C.F. sólo puede contener números')
-    ])
+        validators.RegexValidator('[0-9]{3,4}', 'El C.F. sólo puede contener números')])
     name = forms.CharField(label='Nombre', required=True, validators=[
-        validators.MinLengthValidator(3, 'El nombre es muy corto')
-    ])
+        validators.MinLengthValidator(3, 'El nombre es muy corto')])
     surnames = forms.CharField(label='Apellidos', required=True, validators=[
-        validators.MinLengthValidator(3, 'Los apellidos son muy cortos')
-    ])
+        validators.MinLengthValidator(3, 'Los apellidos son muy cortos')])
     category = forms.ModelChoiceField(queryset=Category.objects.all(), label='Categoría')
     residence = forms.ModelChoiceField(queryset=Residence.objects.all(), label='Residencia')
 
@@ -31,10 +28,6 @@ class AgentForm(forms.Form):
         'class': 'surnames_content_form'
     })
 
-
-# class UploadDocumentForm(forms.Form):
-#     name = forms.CharField(max_length=100)
-#     excel_file = forms.FileField()
 
 class DocumentForm(ModelForm):
     class Meta:
