@@ -1,4 +1,4 @@
-{% extends 'weekly/layout.html' %}
+{% extends 'layouts/layout.html' %}
 
 {% block title %} {{title}} {% endblock title %}
 
@@ -6,8 +6,14 @@
 
     <h1 class="title">{{title}}</h1>
 
-    <h2>Último gráfico semanal</h2>
-    <p>
-        {% lorem 3 %}
-    </p>
+    <h2>Últimos archivos subidos</h2>
+    <ul>
+        {% for document in documents %}
+            <li>
+                {{ document.document }} subido el {{ document.uploaded_at }}
+            </li>
+        {% empty %}
+            <p><strong>No hay documentos en la base de datos.</strong></p>
+        {% endfor %}
+    </ul>
 {% endblock content %}

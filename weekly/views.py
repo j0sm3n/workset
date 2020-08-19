@@ -8,14 +8,23 @@ from weekly.datos_excel import rename_doc
 
 
 def index(request):
+
+    documents = Document.objects.order_by('-document')
+
     return render(request, 'weekly/index.html', {
         'title': 'Gestión de turnos',
+        'documents': documents,
     })
 
 
 def weekly(request):
+
+    document = Document.objects.latest('document')
+    doc_path = os.path.join('media/documents', document.document.name)
+
     return render(request, 'weekly/weekly.html', {
         'title': 'Turnos semanales',
+        'document': document,
     })
 
 
@@ -40,7 +49,6 @@ def agent(request, cf):
 
 
 def agents(request):
-    # agents = Agent.objects.all()
     agnts = Agent.objects.order_by('cf')
 
     return render(request, 'weekly/agents.html', {
@@ -110,15 +118,27 @@ def upload_doc(request):
     })
 
 
+# def handle_uploaded_file(f):
+#     path_file = os.path.join(settings.MEDIA_ROOT, 'documents')
+#     path_file = os.path.join(path_file, 'GSEM.xlsx')
+#
+#     with open(path_file, 'wb+') as destination:
+#         for chunk in f.chunks():
+#             destination.write(chunk)
+#
+#     new_name = rename_doc(path_file)
+#     shutil.move(new_name, f'media/documents/{new_name}')
+#
+#     return new_name
+
 def handle_uploaded_file(f):
-    path_file = os.path.join(settings.MEDIA_ROOT, 'documents')
-    path_file = os.path.join(path_file, 'GSEM.xlsx')
+    path_file = os.path.join(settings.MEDIA_ROOT, 'GSEM.xlsx')
 
     with open(path_file, 'wb+') as destination:
         for chunk in f.chunks():
             destination.write(chunk)
 
     new_name = rename_doc(path_file)
-    shutil.move(new_name, f'media/documents/{new_name}')
+    shutil.move(new_name, f'media/{new_name}')
 
     return new_name

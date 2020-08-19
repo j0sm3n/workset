@@ -1,7 +1,11 @@
-{% extends 'weekly/layout.html' %}
+{% extends 'layouts/layout.html' %}
 
 {% block title %} {{title}} {% endblock title %}
 
 {% block content %}
     <h1 class="title">{{title}}</h1>
+
+    <h2>Gráfico de la semana </h2>
+
+    <p><strong>{{ document.document.path }}</strong></p>
 {% endblock content %}
