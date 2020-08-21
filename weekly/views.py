@@ -1,16 +1,18 @@
 import os, shutil
+import datetime, locale
 from django.shortcuts import HttpResponse, render, redirect
 from django.contrib import messages
 from django.conf import settings
 from weekly.models import Agent, Residence, Category, Document
 from weekly.forms import AgentForm, DocumentForm
-from weekly.datos_excel import rename_doc
+from weekly.datos_excel import rename_doc, turnos_semana, fecha_grafico
 
+
+locale.setlocale(locale.LC_ALL, "es_ES.UTF-8")
 
 def index(request):
 
     documents = Document.objects.order_by('-document')
-
     return render(request, 'weekly/index.html', {
         'title': 'Gestión de turnos',
         'documents': documents,
@@ -20,11 +22,21 @@ def index(request):
 def weekly(request):
 
     document = Document.objects.latest('document')
-    doc_path = os.path.join('media/documents', document.document.name)
+    agnts = Agent.objects.all()
+    monday = fecha_grafico(document.document.path)
+    sunday = monday + datetime.timedelta(6)
+    caption = f"Semana del {monday.strftime('%d-%b')} al {sunday.strftime('%d-%b')}"
+    agents_shifts = []
+    for agnt in agnts:
+        agnt_name = f'{agnt.surnames.title()}, {agnt.name.title()}'
+        agnt_shifts = {'name': agnt_name,
+                       'shifts': turnos_semana(document.document.path, 'G_BENIDORM', agnt.cf)}
+        agents_shifts.append(agnt_shifts)
 
     return render(request, 'weekly/weekly.html', {
         'title': 'Turnos semanales',
-        'document': document,
+        'agents_shifts': agents_shifts,
+        'caption': caption
     })
 
 

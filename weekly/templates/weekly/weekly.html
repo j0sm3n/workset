@@ -5,7 +5,29 @@
 {% block content %}
     <h1 class="title">{{title}}</h1>
 
-    <h2>Gráfico de la semana </h2>
-
-    <p><strong>{{ document.document.path }}</strong></p>
+    <table id="week-shifts">
+    <caption>{{ caption }}</caption>
+        <tr>
+            <th></th>
+            <th>Lun</th>
+            <th>Mar</th>
+            <th>Mié</th>
+            <th>Jue</th>
+            <th>Vie</th>
+            <th>Sáb</th>
+            <th>Dom</th>
+        </tr>
+        {% for agent_shifts in agents_shifts %}
+            {% if agent_shifts.shifts %}
+                <tr>
+                    <th>{{ agent_shifts.name }}</th>
+                    {% for shift in agent_shifts.shifts %}
+                        <td>{% if shift is not None %}{{ shift }}{% endif %}</td>
+                    {% endfor %}
+                </tr>
+            {% endif %}
+        {% empty %}
+            <p><strong>No se ha encontrado nada de nada</strong></p>
+        {% endfor %}
+    </table>
 {% endblock content %}

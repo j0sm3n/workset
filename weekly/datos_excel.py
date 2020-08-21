@@ -32,7 +32,7 @@ def turnos_semana(fichero, hoja, agente):
         exit(1)
 
     # Filas en las que se encuentra el CF
-    celdas_cf = ws['B10':'B66']
+    celdas_cf = ws['B10':'B100']
     # Columnas en las que se encuentran los turnos
     col_turnos = range(4, 11)
     # Aquí iré añadiendo mis turnos
@@ -48,7 +48,7 @@ def turnos_semana(fichero, hoja, agente):
     # No se encuentra el agente
     if mi_fila == 0:
         print(f"ERROR: No se ha encontrado al agente {agente}")
-        exit(1)
+        return []
 
     # A partir de mi_fila, añado los turnos a mis_turnos
     for columna in col_turnos:
