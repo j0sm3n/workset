@@ -5,7 +5,8 @@ from django.contrib import messages
 from django.conf import settings
 from weekly.models import Agent, Residence, Category, Document
 from weekly.forms import AgentForm, DocumentForm
-from weekly.datos_excel import rename_doc, turnos_semana, fecha_grafico
+from tools.datos_excel import rename_doc, turnos_semana, fecha_grafico
+from tools.test import save_week_shifts
 
 
 locale.setlocale(locale.LC_ALL, "es_ES.UTF-8")
@@ -119,6 +120,8 @@ def upload_doc(request):
 
             messages.success(request, f'El archivo {new_file_name} se ha guardado correctamente')
 
+            save_week_shifts(os.path.join(settings.MEDIA_ROOT, new_file_name))
+
             return redirect('upload_doc')
 
     else:
@@ -129,19 +132,6 @@ def upload_doc(request):
         'form': form
     })
 
-
-# def handle_uploaded_file(f):
-#     path_file = os.path.join(settings.MEDIA_ROOT, 'documents')
-#     path_file = os.path.join(path_file, 'GSEM.xlsx')
-#
-#     with open(path_file, 'wb+') as destination:
-#         for chunk in f.chunks():
-#             destination.write(chunk)
-#
-#     new_name = rename_doc(path_file)
-#     shutil.move(new_name, f'media/documents/{new_name}')
-#
-#     return new_name
 
 def handle_uploaded_file(f):
     path_file = os.path.join(settings.MEDIA_ROOT, 'GSEM.xlsx')

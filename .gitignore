@@ -5,3 +5,5 @@ weekly/static/weekly/.DS_Store
 .DS_Store
 
 weekly/__pycache__/
+/tools/credentials.json
+/tools/token.pickle
