@@ -37,7 +37,7 @@ def import_txt_into_bd():
     """
     Script that imports txt file with raw data into the project database
     """
-    conn = sqlite3.connect('../db.sqlite3')
+    conn = sqlite3.connect('../db2.sqlite3')
     cursor = conn.cursor()
 
     lines = (line for line in open(txt_file))
@@ -49,7 +49,7 @@ def import_txt_into_bd():
             shift_date = datetime.strptime(day_line[0].replace('.', '-2020'), '%d-%b-%Y')
             for index, agent in enumerate(agents):
                 cf = int(agent.split(',')[0])
-                str_shift_date = shift_date.strftime('%d-%m-%Y')
+                str_shift_date = shift_date.strftime('%Y-%m-%d')
                 cursor.execute(f"SELECT id FROM weekly_shift WHERE name is '{day_line[2:][index]}';")
                 shift_id = cursor.fetchone()[0]
                 cursor.execute("INSERT INTO weekly_agentshift VALUES (null, ?, ?, ?, ?);",

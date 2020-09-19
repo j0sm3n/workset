@@ -6,7 +6,7 @@ from django.conf import settings
 from weekly.models import Agent, Residence, Category, Document
 from weekly.forms import AgentForm, DocumentForm
 from tools.datos_excel import rename_doc, turnos_semana, fecha_grafico
-from tools.test import save_week_shifts
+from tools.test import save_week_shifts, xls2db
 
 
 locale.setlocale(locale.LC_ALL, "es_ES.UTF-8")
@@ -21,23 +21,25 @@ def index(request):
 
 
 def weekly(request):
+    """Shows the actual week for every agent."""
 
     document = Document.objects.latest('document')
-    agnts = Agent.objects.all()
+    agnts = Agent.objects.all().filter(category__category='maquinista')
     monday = fecha_grafico(document.document.path)
-    sunday = monday + datetime.timedelta(6)
-    caption = f"Semana del {monday.strftime('%d-%b')} al {sunday.strftime('%d-%b')}"
+    days = [monday + datetime.timedelta(n) for n in range(7)]
+    caption = f"Semana del {days[0].strftime('%d-%b')} al {days[6].strftime('%d-%b')}"
     agents_shifts = []
     for agnt in agnts:
         agnt_name = f'{agnt.surnames.title()}, {agnt.name.title()}'
         agnt_shifts = {'name': agnt_name,
-                       'shifts': turnos_semana(document.document.path, 'G_BENIDORM', agnt.cf)}
+                       'shifts': turnos_semana(document.document.path, agnt.cf)}
         agents_shifts.append(agnt_shifts)
 
     return render(request, 'weekly/weekly.html', {
         'title': 'Turnos semanales',
         'agents_shifts': agents_shifts,
-        'caption': caption
+        'caption': caption,
+        'days': days
     })
 
 
@@ -56,7 +58,7 @@ def agent(request, cf):
     return render(request, 'weekly/weekly-agent.html', {
         'title': 'Turnos del agente',
         'cf': agnt.cf,
-        'name': agnt.name,
+        'name': agnt.residence,
         'surnames': agnt.surnames,
     })
 
@@ -120,7 +122,9 @@ def upload_doc(request):
 
             messages.success(request, f'El archivo {new_file_name} se ha guardado correctamente')
 
-            save_week_shifts(os.path.join(settings.MEDIA_ROOT, new_file_name))
+            saved_file = os.path.join(settings.MEDIA_ROOT, new_file_name)
+            save_week_shifts(saved_file)
+            xls2db(saved_file)
 
             return redirect('upload_doc')
 
