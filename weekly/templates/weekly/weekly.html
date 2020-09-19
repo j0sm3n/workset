@@ -17,6 +17,12 @@
             <th>Sáb</th>
             <th>Dom</th>
         </tr>
+        <tr>
+            <th></th>
+            {% for day in days %}
+                <th>{{ day|date:"d" }}</th>
+            {% endfor %}
+        </tr>
         {% for agent_shifts in agents_shifts %}
             {% if agent_shifts.shifts %}
                 <tr>

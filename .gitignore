@@ -7,3 +7,9 @@ weekly/static/weekly/.DS_Store
 weekly/__pycache__/
 /tools/credentials.json
 /tools/token.pickle
+/ideas/
+/shifts_plt.py
+
+__pycache__/
+
+*.sqlite3

@@ -2,25 +2,25 @@ from django.db import models
 
 
 class Residence(models.Model):
-    name = models.CharField(max_length=20, verbose_name='Residencia')
+    residence = models.CharField(max_length=20, verbose_name='Residencia')
 
     class Meta:
         verbose_name = 'residencia'
         verbose_name_plural = 'residencias'
 
     def __str__(self):
-        return self.name.title()
+        return self.residence.title()
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=20, verbose_name='Categoría')
+    category = models.CharField(max_length=20, verbose_name='Categoría')
 
     class Meta:
         verbose_name = 'categoría'
         verbose_name_plural = 'categorías'
 
     def __str__(self):
-        return self.name.title()
+        return self.category.title()
 
 
 class Agent(models.Model):
@@ -41,9 +41,9 @@ class Agent(models.Model):
 
 class Shift(models.Model):
     name = models.CharField(max_length=10, unique=True, verbose_name='Turno')
-    start = models.TimeField(verbose_name='Inicio')
-    end = models.TimeField(verbose_name='Fin')
-    category = models.CharField(max_length=20, verbose_name='Categoría')
+    start = models.TimeField(verbose_name='Inicio', null=True, blank=True)
+    end = models.TimeField(verbose_name='Fin', null=True, blank=True)
+    category = models.CharField(max_length=20, verbose_name='Categoría', null=True, blank=True)
 
     class Meta:
         verbose_name = 'turno'
@@ -76,3 +76,12 @@ class Document(models.Model):
     class Meta:
         verbose_name = 'documento'
         verbose_name_plural = 'documentos'
+
+
+class Calendar(models.Model):
+    agent = models.ForeignKey(Agent, on_delete=models.DO_NOTHING, verbose_name="Agente")
+    calendar = models.CharField(max_length=100, unique=True, verbose_name='Calendario')
+
+    class Meta:
+        verbose_name = 'calendario'
+        verbose_name_plural = 'calendarios'

@@ -1,11 +1,11 @@
 """Turnos
 
-    - turnos_semana(fichero, hoja)
+    - turnos_semana(fichero, agente)
         Devuelve una lista de cadenas de texto con los turnos de trabajo
         recogidos en la hoja de Excel.
 
         Forma de uso:
-        >>> turnos_semana('GSEMANAL20.xlsx', 'G_BENIDORM')
+        >>> turnos_semana('GSEMANAL20.xlsx', 2076)
         ['1F', '1F ', 'FGL', '6F', '2F', 'D', 'D']
 """
 
@@ -13,7 +13,9 @@ from os import rename
 from openpyxl import load_workbook
 
 
-def turnos_semana(fichero, hoja, agente):
+hoja = 'G_BENIDORM'
+
+def turnos_semana(fichero, agente):
     """Abre el fichero Excel y extrae los turnos de trabajo de la hoja
     correspondiente. Devuelve una lista con 7 cadenas de texto correspondientes
     a los turnos de cada día de la semana.
@@ -59,7 +61,6 @@ def turnos_semana(fichero, hoja, agente):
 
 
 def fecha_grafico(fichero):
-
     try:
         # Accedo al fichero excel
         wb = load_workbook(fichero)
@@ -77,14 +78,11 @@ def fecha_grafico(fichero):
 
 
 def str_doc_date(fichero):
-
     doc_date = fecha_grafico(fichero)
-
     return doc_date.strftime('%Y-%m-%d')
 
 
 def rename_doc(fichero):
     new_name = str_doc_date(fichero) + "_GSEM.xlsx"
     rename(fichero, new_name)
-
     return new_name
