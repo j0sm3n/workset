@@ -1,4 +1,5 @@
 import os, shutil
+import csv
 import datetime, locale
 from django.shortcuts import HttpResponse, render, redirect
 from django.contrib import messages
@@ -6,7 +7,7 @@ from django.conf import settings
 from weekly.models import Agent, Residence, Category, Document
 from weekly.forms import AgentForm, DocumentForm
 from tools.datos_excel import rename_doc, turnos_semana, fecha_grafico
-from tools.test import save_week_shifts, xls2db
+from tools.test import create_calendar_events, excel_to_db
 
 
 locale.setlocale(locale.LC_ALL, "es_ES.UTF-8")
@@ -23,25 +24,27 @@ def index(request):
 def weekly(request):
     """Shows the actual week for every agent."""
 
-    document = Document.objects.latest('document')
-    agnts = Agent.objects.all().filter(category__category='maquinista')
-    monday = fecha_grafico(document.document.path)
-    days = [monday + datetime.timedelta(n) for n in range(7)]
-    caption = f"Semana del {days[0].strftime('%d-%b')} al {days[6].strftime('%d-%b')}"
-    agents_shifts = []
-    for agnt in agnts:
-        agnt_name = f'{agnt.surnames.title()}, {agnt.name.title()}'
-        agnt_shifts = {'name': agnt_name,
-                       'shifts': turnos_semana(document.document.path, agnt.cf)}
-        agents_shifts.append(agnt_shifts)
+    with open('/Users/jose/Proyectos/workdays/media/this_week.csv') as csv_file:
+        file_reader = csv.reader(csv_file, delimiter=',')
+        line_count = 0
+        week_shifts = []
+        for row in file_reader:
+            if line_count == 0:
+                days_str = [row]
+                days = [datetime.datetime.strptime(day, '%Y-%m-%d') for day in row]
+                line_count += 1
+            else:
+                week_shifts.append([row])
+                line_count += 1
+
+    caption = f"Semana del {days[0].strftime('%d-%b')} al {days[-1].strftime('%d-%b')}"
 
     return render(request, 'weekly/weekly.html', {
-        'title': 'Turnos semanales',
-        'agents_shifts': agents_shifts,
-        'caption': caption,
-        'days': days
+        'title': 'Trunos semanales',
+        'days': days,
+        'agents_shifts': week_shifts,
+        'caption': caption
     })
-
 
 def weekly_agent(request):
     return render(request, 'weekly/weekly-agent.html', {
@@ -123,8 +126,8 @@ def upload_doc(request):
             messages.success(request, f'El archivo {new_file_name} se ha guardado correctamente')
 
             saved_file = os.path.join(settings.MEDIA_ROOT, new_file_name)
-            save_week_shifts(saved_file)
-            xls2db(saved_file)
+            create_calendar_events(saved_file)
+            excel_to_db(saved_file)
 
             return redirect('upload_doc')
 

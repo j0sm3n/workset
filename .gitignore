@@ -13,3 +13,7 @@ weekly/__pycache__/
 __pycache__/
 
 *.sqlite3
+
+media/last_week.csv
+
+media/this_week.csv

@@ -9,6 +9,7 @@
     <caption>{{ caption }}</caption>
         <tr>
             <th></th>
+            <th></th>
             <th>Lun</th>
             <th>Mar</th>
             <th>Mié</th>
@@ -19,19 +20,34 @@
         </tr>
         <tr>
             <th></th>
+            <th></th>
             {% for day in days %}
                 <th>{{ day|date:"d" }}</th>
             {% endfor %}
         </tr>
+        {% comment %}
         {% for agent_shifts in agents_shifts %}
-            {% if agent_shifts.shifts %}
+            <tr>
+                <th>{{ agent_shifts.name }}</th>
+                {% for shift in agent_shifts.shifts %}
+                    <td>{% if shift is not None %}{{ shift }}{% endif %}</td>
+                {% endfor %}
+            </tr>
+        {% endcomment %}
+        {% for agent_shifts in agents_shifts %}
+            {% for cf, name, mon, tue, wed, thu, fri, sat, sun in agent_shifts %}
                 <tr>
-                    <th>{{ agent_shifts.name }}</th>
-                    {% for shift in agent_shifts.shifts %}
-                        <td>{% if shift is not None %}{{ shift }}{% endif %}</td>
-                    {% endfor %}
+                    <th>{{ cf }}</th>
+                    <th>{{ name }}</th>
+                    <td>{{ mon }}</td>
+                    <td>{{ tue }}</td>
+                    <td>{{ wed }}</td>
+                    <td>{{ thu }}</td>
+                    <td>{{ fri }}</td>
+                    <td>{{ sat }}</td>
+                    <td>{{ sun }}</td>
                 </tr>
-            {% endif %}
+            {% endfor %}
         {% empty %}
             <p><strong>No se ha encontrado nada de nada</strong></p>
         {% endfor %}
